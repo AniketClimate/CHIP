@@ -9,7 +9,9 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <!-- THREE.js & Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/controls/OrbitControls.min.js"></script>
+
 <style>
   body{background:#f5f7fa}
   nav a.nav-link{font-weight:600;cursor:pointer}
@@ -110,13 +112,65 @@ function calculateFromBill(){const b=parseFloat(monthlyBill.value);if(b){buildin
 startBtn.addEventListener('click',()=>{switchTab('simulation');simulate();});
 function simulate(){const steps=['step1','step2','step3','step4','step5'];steps.forEach((id,i)=>setTimeout(()=>{document.getElementById(id).textContent='✅ '+document.getElementById(id).textContent.slice(2);if(i===steps.length-1){setTimeout(()=>{switchTab('view3d');init3D();setupRetrofits();},500);}},(i+1)*1000));}
 /* ---- 3D & SOLAR ---- */
-function init3D(){const c=document.getElementById('viewer3d');c.innerHTML='';scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(70,c.clientWidth/c.clientHeight,.1,1000);camera.position.set(15,15,15);renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(c.clientWidth,c.clientHeight);c.appendChild(renderer.domElement);scene.add(new THREE.AmbientLight(0xffffff,.7));const dLight=new THREE.DirectionalLight(0xffffff,.8);dLight.position.set(20,20,10);scene.add(dLight);
-const box=new THREE.Mesh(new THREE.BoxGeometry(12,4,8),new THREE.MeshLambertMaterial({color:0x8ecae6}));box.position.y=2;scene.add(box);const ground=new THREE.Mesh(new THREE.PlaneGeometry(40,40),new THREE.MeshLambertMaterial({color:0x90c695}));ground.rotation.x=-Math.PI/2;scene.add(ground);animate();createSolarCharts();}
+let controls; // Add at global level
+
+function init3D() {
+  const c = document.getElementById('viewer3d');
+  c.innerHTML = '';
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(70, c.clientWidth / c.clientHeight, 0.1, 1000);
+  camera.position.set(15, 15, 15);
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(c.clientWidth, c.clientHeight);
+  c.appendChild(renderer.domElement);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement); // Enable camera rotation
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const dLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  dLight.position.set(20, 20, 10);
+  scene.add(dLight);
+
+  const box = new THREE.Mesh(new THREE.BoxGeometry(12, 4, 8), new THREE.MeshLambertMaterial({ color: 0x8ecae6 }));
+  box.position.y = 2;
+  scene.add(box);
+
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshLambertMaterial({ color: 0x90c695 }));
+  ground.rotation.x = -Math.PI / 2;
+  scene.add(ground);
+
+  animate();
+  createSolarCharts();
+}
 function animate(){requestAnimationFrame(animate);if(scene&&renderer&&camera){camera.lookAt(0,0,0);renderer.render(scene,camera);}}
 function createSolarCharts(){new Chart(solarChart,{type:'line',data:{labels:['6','9','12','15','18'],datasets:[{label:'Solar (W/m²)',data:[100,400,800,600,200],borderColor:'#ff6b35'}]}});new Chart(heatGainChart,{type:'bar',data:{labels:['E','S','W','N','Roof'],datasets:[{label:'Heat (kW)',data:[15,25,20,8,30],backgroundColor:'#ff9'}]}});}
 /* ---- RETROFITS ---- */
-function setupRetrofits(){const list=[{id:'cool',title:'Cool Roof',savings:.25},{id:'shade',title:'Shading',savings:.2},{id:'vent',title:'Ventilation',savings:.35}];retroList.innerHTML=list.map(r=>`<div class='col-md-4'><div class='retrofit-card' onclick="toggleRetrofit('${r.id}',${r.savings})">${r.title}</div></div>`).join('');}
-function toggleRetrofit(id,save){const card=[...document.querySelectorAll('.retrofit-card')].find(c=>c.textContent.includes(id.split('-')[0]));if(card.classList.toggle('selected')){selectedRetrofits.push({id,s:save});}else{selectedRetrofits=selectedRetrofits.filter(r=>r.id!==id);}calculateBtn.disabled=!selectedRetrofits.length;}
+function setupRetrofits(){
+  const list = [
+    { id: 'cool', title: 'Cool Roof', savings: 0.25 },
+    { id: 'shade', title: 'Shading', savings: 0.2 },
+    { id: 'vent', title: 'Ventilation', savings: 0.35 }
+  ];
+
+  retroList.innerHTML = list.map(r => `
+    <div class='col-md-4'>
+      <div class='retrofit-card' data-id='${r.id}' onclick="toggleRetrofit(this, '${r.id}', ${r.savings})">
+        ${r.title}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleRetrofit(card, id, save) {
+  card.classList.toggle('selected');
+  if (card.classList.contains('selected')) {
+    selectedRetrofits.push({ id, s: save });
+  } else {
+    selectedRetrofits = selectedRetrofits.filter(r => r.id !== id);
+  }
+  calculateBtn.disabled = !selectedRetrofits.length;
+}
+
 function calculateRetrofitResults(){buildingData.retrofitSavings=Math.min(selectedRetrofits.reduce((t,r)=>t+r.s,0),.6);switchTab('results');showResults();}
 function showResults(){const cur=buildingData.currentConsumption||45000;const newC=Math.round(cur*(1-buildingData.retrofitSavings));new Chart(energyChart,{type:'bar',data:{labels:['Current','With Retrofits'],datasets:[{data:[cur,newC],backgroundColor:['#dc3545','#198754']}]}});financialSummary.textContent=`Savings: ₹${(cur-newC)*6}`;}
 </script>
