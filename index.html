@@ -172,7 +172,29 @@ function toggleRetrofit(card, id, save) {
 }
 
 function calculateRetrofitResults(){buildingData.retrofitSavings=Math.min(selectedRetrofits.reduce((t,r)=>t+r.s,0),.6);switchTab('results');showResults();}
-function showResults(){const cur=buildingData.currentConsumption||45000;const newC=Math.round(cur*(1-buildingData.retrofitSavings));new Chart(energyChart,{type:'bar',data:{labels:['Current','With Retrofits'],datasets:[{data:[cur,newC],backgroundColor:['#dc3545','#198754']}]}});financialSummary.textContent=`Savings: ₹${(cur-newC)*6}`;}
+function showResults(){
+  const cur = buildingData.currentConsumption || 45000;
+  const newC = Math.round(cur * (1 - buildingData.retrofitSavings));
+  const saved = cur - newC;
+
+  new Chart(energyChart, {
+    type: 'bar',
+    data: {
+      labels: ['Current Consumption (kWh)', 'Post-Retrofit (kWh)'],
+      datasets: [{
+        data: [cur, newC],
+        backgroundColor: ['#dc3545', '#198754']
+      }]
+    }
+  });
+
+  financialSummary.innerHTML = `
+    <p><strong>Baseline Consumption:</strong> ${cur.toLocaleString()} kWh/year</p>
+    <p><strong>Post-Retrofit Consumption:</strong> ${newC.toLocaleString()} kWh/year</p>
+    <p><strong>Estimated Annual Savings:</strong> ₹${(saved * 6).toLocaleString()}</p>
+  `;
+}
+
 </script>
 </body>
 </html>
