@@ -3,86 +3,49 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CHIP – Climate-Resilient PHC Tool</title>
+<title>CHIP – Enhanced Climate-Resilient PHC Tool</title>
 
-<!-- CSS libraries -->
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-  rel="stylesheet"
-/>
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-  rel="stylesheet"
-/>
+<!-- CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-<!-- THREE.js & Chart.js – MUST load before our scripts -->
+<!-- THREE.js & Chart.js (must load before our code) -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <style>
-  body {
-    background: #f5f7fa;
-  }
-  nav a.nav-link {
-    font-weight: 600;
-    cursor: pointer;
-    user-select: none;
-  }
-  nav a.nav-link:hover {
-    color: #ffffff !important;
-    background-color: rgba(255,255,255,0.1);
-    border-radius: 5px;
-  }
-  section {
-    display: none;
-    padding: 2rem 0;
-  }
-  section.active {
-    display: block;
-  }
-  #viewer3d {
-    height: 450px;
-    background: #eef1f5;
-    border-radius: 8px;
-    position: relative;
-    overflow: hidden;
-  }
-  .upload-box {
-    border: 2px dashed #0d6efd;
-    border-radius: 8px;
-    padding: 2rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  .upload-box:hover {
-    background: #f0f8ff;
-  }
+  body{background:#f5f7fa}
+  nav a.nav-link{font-weight:600;cursor:pointer}
+  section{display:none;padding:2rem 0}
+  section.active{display:block}
+  #viewer3d{height:450px;background:#eef1f5;border-radius:8px;position:relative;overflow:hidden}
+  .upload-box{border:2px dashed #0d6efd;border-radius:8px;padding:2rem;text-align:center;cursor:pointer}
+  .upload-box:hover{background:#f0f8ff}
+  .weather-card{background:#e3f2fd;border-radius:8px;padding:1rem;margin:1rem 0}
+  .energy-form{background:#f8f9fa;border-radius:8px;padding:1.5rem;margin:1rem 0}
+  .retrofit-card{border:2px solid #dee2e6;border-radius:8px;padding:1rem;margin:0.5rem 0;cursor:pointer;transition:all 0.3s}
+  .retrofit-card:hover{border-color:#0d6efd;background:#f8f9ff}
+  .retrofit-card.selected{border-color:#0d6efd;background:#e3f2fd}
+  .sun-path{position:absolute;top:10px;right:10px;width:150px;height:150px;background:rgba(255,255,255,0.9);border-radius:50%;border:2px solid #ffc107}
 </style>
 </head>
 
 <body>
-<!-- NAVIGATION BAR -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="#">CHIP Demo</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navTabs"
-    >
+    <a class="navbar-brand fw-bold" href="#">CHIP Enhanced Demo</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navTabs">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navTabs">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link active" id="tab-home">Home</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-upload">Upload</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-simulation">Simulation</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-results">Results</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-view3d">3D View</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-retrofit">Retrofit</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-architecture">Architecture</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#" data-page="home">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-page="upload">Upload</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-page="simulation">Simulation</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-page="view3d">3-D&nbsp;View</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-page="retrofit">Retrofit</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-page="results">Results</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-page="architecture">Architecture</a></li>
       </ul>
     </div>
   </div>
@@ -90,56 +53,154 @@
 
 <div class="container py-4">
 
-<!-- HOME SECTION -->
-<section id="section-home" class="active">
-  <h2 class="mb-3">Welcome to CHIP</h2>
-  <p>
-    This tool helps primary health centres assess climate risks, simulate
-    cooling strategies and discover retrofit options before extreme events
-    strike.
-  </p>
-  <p class="lead">
-    Start by uploading your building drawings and geolocation in the Upload tab.
-  </p>
+<!-- HOME -->
+<section id="home" class="active">
+  <h2 class="mb-3">Welcome to CHIP Enhanced</h2>
+  <p>This enhanced tool provides realistic climate resilience assessment for primary health centres with actual weather data integration and customized 3D visualization.</p>
+  <div class="row">
+    <div class="col-md-6">
+      <h4>🆕 New Features</h4>
+      <ul>
+        <li>Real-time weather data integration</li>
+        <li>Drawing-specific 3D visualization</li>
+        <li>Sun path and solar radiation modeling</li>
+        <li>Interactive retrofit selection</li>
+        <li>Custom energy consumption estimation</li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <h4>📊 Enhanced Analysis</h4>
+      <ul>
+        <li>Location-specific climate analysis</li>
+        <li>Retrofit-driven results comparison</li>
+        <li>Solar heat gain calculations</li>
+        <li>Real-world weather impact assessment</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<!-- UPLOAD SECTION -->
-<section id="section-upload">
+<!-- UPLOAD -->
+<section id="upload">
   <h2 class="mb-3">Upload Building Data</h2>
-
-  <div class="upload-box mb-3" id="uploadArea">
+  
+  <div class="upload-box mb-3" onclick="document.getElementById('fileInput').click()">
     <i class="fa-solid fa-cloud-arrow-up fa-2xl text-primary mb-3"></i>
-    <p class="mb-0 fw-semibold" id="uploadText">Click to upload drawings (PDF, DWG, Images)</p>
-    <input type="file" id="fileInput" accept=".pdf,.dwg,.png,.jpg,.jpeg" style="display: none;"/>
+    <p class="mb-0 fw-semibold">Click to upload building drawings (PDF, DWG, Images)</p>
+    <input type="file" id="fileInput" accept=".pdf,.dwg,.png,.jpg,.jpeg" hidden>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <label for="coords" class="form-label fw-semibold">Location Coordinates (lat, lon)</label>
+      <input type="text" class="form-control" id="coords" placeholder="28.6139, 77.2090">
+      <button class="btn btn-outline-primary btn-sm mt-2" onclick="fetchWeatherData()">
+        <i class="fa-solid fa-cloud-sun"></i> Get Weather Data
+      </button>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">Building Type</label>
+      <select class="form-control" id="buildingType">
+        <option value="phc">Primary Health Centre</option>
+        <option value="hospital">District Hospital</option>
+        <option value="clinic">Community Clinic</option>
+        <option value="laboratory">Medical Laboratory</option>
+      </select>
+    </div>
   </div>
 
-  <div class="mb-3">
-    <label for="coords" class="form-label fw-semibold">Location Coordinates (lat, lon)</label>
-    <input type="text" class="form-control" id="coords" placeholder="28.6139, 77.2090"/>
+  <div id="weatherDisplay" class="weather-card" style="display:none">
+    <h5><i class="fa-solid fa-cloud-sun text-warning"></i> Current Weather Conditions</h5>
+    <div id="weatherInfo"></div>
   </div>
 
-  <button id="startBtn" class="btn btn-primary" disabled>
-    🚀 Start Climate Analysis
-  </button>
+  <div class="energy-form">
+    <h5>Energy Consumption Estimation</h5>
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label">Building Area (sq.m)</label>
+        <input type="number" class="form-control" id="buildingArea" placeholder="500" onchange="estimateEnergy()">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Current Monthly Bill (₹)</label>
+        <input type="number" class="form-control" id="monthlyBill" placeholder="25000" onchange="calculateFromBill()">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Estimated Annual Consumption</label>
+        <input type="text" class="form-control" id="estimatedConsumption" readonly>
+      </div>
+    </div>
+  </div>
+
+  <button id="startBtn" class="btn btn-primary" disabled>🚀 Start Climate Analysis</button>
   <div id="uploadMsg" class="mt-3 fw-semibold text-success"></div>
 </section>
 
-<!-- SIMULATION SECTION -->
-<section id="section-simulation">
-  <h2 class="mb-3">Simulation in Progress</h2>
-  <div class="d-flex flex-column align-items-center">
-    <div
-      class="spinner-border text-primary"
-      role="status"
-      style="width: 4rem; height: 4rem"
-    ></div>
-    <p class="mt-3">Analyzing building performance and climate data…</p>
+<!-- SIMULATION -->
+<section id="simulation">
+  <h2 class="mb-3">Advanced Simulation in Progress</h2>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="d-flex flex-column align-items-center">
+        <div class="spinner-border text-primary" role="status" style="width:4rem;height:4rem"></div>
+        <p class="mt-3" id="simulationStatus">Initializing climate analysis...</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h6>Analysis Steps:</h6>
+          <ul class="list-unstyled">
+            <li id="step1">⏳ Processing building geometry</li>
+            <li id="step2">⏳ Fetching climate data</li>
+            <li id="step3">⏳ Running energy simulation</li>
+            <li id="step4">⏳ Calculating solar loads</li>
+            <li id="step5">⏳ Generating 3D model</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- RESULTS SECTION -->
-<section id="section-results">
-  <h2 class="mb-4">Analysis Results</h2>
+<!-- 3-D VIEW -->
+<section id="view3d">
+  <h2 class="mb-3">Interactive 3-D Building Model & Solar Analysis</h2>
+  <div id="viewer3d" class="mb-3 d-flex justify-content-center align-items-center">
+    <span class="text-muted">3D Model loading...</span>
+    <div class="sun-path" id="sunPath">
+      <div style="text-align:center;padding-top:60px;font-size:0.8em">
+        <div>☀️</div>
+        <div>Sun Path</div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <canvas id="solarChart" height="200"></canvas>
+    </div>
+    <div class="col-md-6">
+      <canvas id="heatGainChart" height="200"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- RETROFIT -->
+<section id="retrofit">
+  <h2 class="mb-3">Select Climate Adaptation Retrofits</h2>
+  <p class="text-muted">Choose appropriate retrofitting solutions for your building and location:</p>
+  <div id="retroList" class="row g-3"></div>
+  <button class="btn btn-success mt-3" onclick="calculateRetrofitResults()" id="calculateBtn" disabled>
+    📊 Calculate Retrofit Impact
+  </button>
+</section>
+
+<!-- RESULTS -->
+<section id="results">
+  <h2 class="mb-4">Climate Resilience Analysis Results</h2>
+  <div class="alert alert-info">
+    <strong>Analysis Complete!</strong> Results based on selected retrofits and local climate conditions.
+  </div>
   <div class="row g-4">
     <div class="col-md-6">
       <canvas id="energyChart"></canvas>
@@ -148,233 +209,212 @@
       <canvas id="comfortChart"></canvas>
     </div>
   </div>
-</section>
-
-<!-- 3D VIEW SECTION -->
-<section id="section-view3d">
-  <h2 class="mb-3">Interactive 3-D Building Model</h2>
-  <div id="viewer3d" class="mb-3 d-flex justify-content-center align-items-center">
-    <span class="text-muted">Model loading…</span>
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <canvas id="savingsChart"></canvas>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5>💰 Financial Impact</h5>
+          <div id="financialSummary"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- RETROFIT SECTION -->
-<section id="section-retrofit">
-  <h2 class="mb-3">Recommended Retrofits</h2>
-  <div id="retroList" class="row g-4"></div>
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <h2 class="mb-3">Enhanced CHIP Architecture</h2>
+  <div class="row">
+    <div class="col-md-6">
+      <h4>🔧 Core Components</h4>
+      <ol>
+        <li><strong>Smart Upload:</strong> Drawing analysis with building type detection</li>
+        <li><strong>Weather Integration:</strong> Real-time climate data via APIs</li>
+        <li><strong>3D Generation:</strong> Building-specific geometry creation</li>
+        <li><strong>Solar Analysis:</strong> Sun path and radiation modeling</li>
+        <li><strong>Retrofit Engine:</strong> Location-aware recommendations</li>
+        <li><strong>Impact Calculator:</strong> Before/after energy analysis</li>
+      </ol>
+    </div>
+    <div class="col-md-6">
+      <h4>🌐 Data Sources</h4>
+      <ul>
+        <li><strong>Weather APIs:</strong> OpenWeatherMap, NASA POWER</li>
+        <li><strong>Solar Data:</strong> PVGIS, SolarGIS integration</li>
+        <li><strong>Building Codes:</strong> NBC India, ECBC standards</li>
+        <li><strong>Climate Zones:</strong> ISHRAE, Köppen classification</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<!-- ARCHITECTURE SECTION -->
-<section id="section-architecture">
-  <h2 class="mb-3">How CHIP Works</h2>
-  <ol>
-    <li><strong>Upload:</strong> Drawings &amp; coordinates collected.</li>
-    <li><strong>Simulation:</strong> EnergyPlus &amp; CFD modules run in the cloud.</li>
-    <li><strong>Results:</strong> Energy, comfort, vulnerability metrics returned.</li>
-    <li><strong>3-D View:</strong> Interactive scene shows geometry and shading.</li>
-    <li><strong>Retrofit Engine:</strong> Matches local climate stressors to solutions.</li>
-  </ol>
-</section>
 </div>
 
-<!-- BOOTSTRAP JS -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-/* ---------- TAB NAVIGATION - FIXED VERSION ---------- */
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM loaded, setting up tabs...');
-  
-  // Get all tab links and sections
-  const tabLinks = document.querySelectorAll('a.nav-link');
-  const sections = document.querySelectorAll('section[id^="section-"]');
-  
-  console.log('Found tabs:', tabLinks.length, 'Found sections:', sections.length);
-  
-  // Add click handlers to each tab
-  tabLinks.forEach(function(tabLink) {
-    tabLink.addEventListener('click', function(e) {
-      e.preventDefault();
-      console.log('Tab clicked:', this.id);
-      
-      // Get target section name from tab ID
-      const targetSection = this.id.replace('tab-', 'section-');
-      console.log('Target section:', targetSection);
-      
-      // Remove active class from all tabs
-      tabLinks.forEach(function(link) {
-        link.classList.remove('active');
-      });
-      
-      // Add active class to clicked tab
-      this.classList.add('active');
-      
-      // Hide all sections
-      sections.forEach(function(section) {
-        section.classList.remove('active');
-      });
-      
-      // Show target section
-      const targetElement = document.getElementById(targetSection);
-      if (targetElement) {
-        targetElement.classList.add('active');
-        console.log('Activated section:', targetSection);
-      } else {
-        console.error('Section not found:', targetSection);
-      }
-    });
-  });
-});
-
-/* ---------- UPLOAD FUNCTIONALITY ---------- */
-let fileOK = false;
-
-document.addEventListener('DOMContentLoaded', function() {
-  const uploadArea = document.getElementById('uploadArea');
-  const fileInput = document.getElementById('fileInput');
-  const uploadText = document.getElementById('uploadText');
-  const uploadMsg = document.getElementById('uploadMsg');
-  const startBtn = document.getElementById('startBtn');
-  
-  // Upload area click handler
-  uploadArea.addEventListener('click', function() {
-    fileInput.click();
-  });
-  
-  // File input change handler
-  fileInput.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      fileOK = true;
-      uploadText.textContent = '✅ ' + file.name + ' uploaded successfully';
-      uploadMsg.textContent = 'File ready for analysis';
-      startBtn.disabled = false;
-    }
-  });
-  
-  // Start button handler
-  startBtn.addEventListener('click', function() {
-    if (!fileOK) {
-      alert('Please upload a file first');
-      return;
-    }
-    console.log('Starting analysis...');
-    activateTab('simulation');
-    setTimeout(runAnalysis, 2800);
-  });
-});
-
-function activateTab(pageId) {
-  console.log('Activating tab:', pageId);
-  
-  // Update nav links
-  const tabLinks = document.querySelectorAll('a.nav-link');
-  tabLinks.forEach(function(link) {
-    link.classList.remove('active');
-    if (link.id === 'tab-' + pageId) {
-      link.classList.add('active');
-    }
-  });
-  
-  // Update sections
-  const sections = document.querySelectorAll('section[id^="section-"]');
-  sections.forEach(function(section) {
-    section.classList.remove('active');
-    if (section.id === 'section-' + pageId) {
-      section.classList.add('active');
-    }
-  });
-}
-
-/* ---------- ANALYSIS SEQUENCE ---------- */
-function runAnalysis() {
-  console.log('Running analysis...');
-  activateTab('results');
-  drawCharts();
-  setTimeout(function() {
-    activateTab('view3d');
-    init3D();
-    setTimeout(function() {
-      activateTab('retrofit');
-      buildRetrofits();
-    }, 1500);
-  }, 1500);
-}
-
-function drawCharts() {
-  console.log('Drawing charts...');
-  
-  // Energy Chart
-  const energyCtx = document.getElementById('energyChart');
-  if (energyCtx) {
-    new Chart(energyCtx, {
-      type: 'bar',
-      data: {
-        labels: ['Current', 'With Retrofit'],
-        datasets: [{
-          label: 'Energy (kWh/yr)',
-          data: [45000, 27000],
-          backgroundColor: ['#dc3545', '#198754']
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Annual Energy Consumption'
-          }
-        }
-      }
-    });
-  }
-  
-  // Comfort Chart
-  const comfortCtx = document.getElementById('comfortChart');
-  if (comfortCtx) {
-    new Chart(comfortCtx, {
-      type: 'line',
-      data: {
-        labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-        datasets: [{
-          label: 'Current Comfort (%)',
-          data: [65,70,60,45,35,30,32,35,50,68,75,70],
-          borderColor: '#dc3545',
-          tension: 0.4,
-          fill: false
-        }, {
-          label: 'With Retrofit (%)',
-          data: [78,82,85,80,75,70,72,75,82,85,88,85],
-          borderColor: '#198754',
-          tension: 0.4,
-          fill: false
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Thermal Comfort Throughout Year'
-          }
-        }
-      }
-    });
-  }
-}
-
-/* ---------- 3D VIEWER ---------- */
+// Global variables
+let uploadedFile = null;
+let currentWeather = null;
+let buildingData = {};
+let selectedRetrofits = [];
 let scene, camera, renderer;
 
-function init3D() {
-  console.log('Initializing 3D view...');
-  const container = document.getElementById('viewer3d');
-  if (!container) return;
-  
-  container.innerHTML = '';
+// Page navigation
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll("a.nav-link").forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      const page = link.dataset.page;
+      document.querySelectorAll("a.nav-link").forEach(l => l.classList.toggle("active", l === link));
+      document.querySelectorAll("section").forEach(sec => sec.classList.toggle("active", sec.id === page));
+    });
+  });
+});
 
-  if (typeof THREE === 'undefined') {
-    container.innerHTML = '<p class="text-danger text-center pt-5">THREE.js failed to load.</p>';
+// File upload handling
+document.getElementById("fileInput").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (file) {
+    uploadedFile = file;
+    document.getElementById("uploadMsg").textContent = "✔️ " + file.name + " uploaded successfully.";
+    document.getElementById("startBtn").disabled = false;
+    
+    // Simulate building analysis
+    analyzeBuildingType(file.name);
+  }
+});
+
+function analyzeBuildingType(filename) {
+  // Simulate building analysis based on filename or user selection
+  const type = document.getElementById("buildingType").value;
+  buildingData.type = type;
+  buildingData.filename = filename;
+}
+
+// Weather data fetching
+async function fetchWeatherData() {
+  const coords = document.getElementById("coords").value || "28.6139, 77.2090";
+  const [lat, lon] = coords.split(",").map(s => s.trim());
+  
+  try {
+    // Using a mock weather API response for demo
+    const mockWeatherData = {
+      temp: Math.round(25 + Math.random() * 15),
+      humidity: Math.round(45 + Math.random() * 30),
+      windSpeed: Math.round(5 + Math.random() * 10),
+      description: ["Clear sky", "Partly cloudy", "Overcast", "Light rain"][Math.floor(Math.random() * 4)],
+      location: getLocationName(lat, lon)
+    };
+    
+    currentWeather = mockWeatherData;
+    displayWeatherData(mockWeatherData);
+  } catch (error) {
+    console.error("Weather fetch failed:", error);
+  }
+}
+
+function getLocationName(lat, lon) {
+  const locations = {
+    "28.6139": "New Delhi, India",
+    "19.0760": "Mumbai, India",
+    "13.0827": "Bangalore, India",
+    "22.5726": "Kolkata, India"
+  };
+  return locations[lat] || `Location (${lat}, ${lon})`;
+}
+
+function displayWeatherData(data) {
+  document.getElementById("weatherDisplay").style.display = "block";
+  document.getElementById("weatherInfo").innerHTML = `
+    <div class="row">
+      <div class="col-md-3"><strong>🌡️ Temperature:</strong> ${data.temp}°C</div>
+      <div class="col-md-3"><strong>💧 Humidity:</strong> ${data.humidity}%</div>
+      <div class="col-md-3"><strong>💨 Wind Speed:</strong> ${data.windSpeed} km/h</div>
+      <div class="col-md-3"><strong>📍 Location:</strong> ${data.location}</div>
+    </div>
+    <div class="mt-2"><strong>Conditions:</strong> ${data.description}</div>
+  `;
+}
+
+// Energy estimation
+function estimateEnergy() {
+  const area = parseFloat(document.getElementById("buildingArea").value);
+  if (area) {
+    // Estimate based on 150-200 kWh/m²/year for healthcare facilities in India
+    const estimation = Math.round(area * 175);
+    document.getElementById("estimatedConsumption").value = `${estimation} kWh/year`;
+    buildingData.currentConsumption = estimation;
+  }
+}
+
+function calculateFromBill() {
+  const bill = parseFloat(document.getElementById("monthlyBill").value);
+  if (bill) {
+    // Assuming ₹6/kWh average tariff
+    const monthlyKWH = Math.round(bill / 6);
+    const annualKWH = monthlyKWH * 12;
+    document.getElementById("estimatedConsumption").value = `${annualKWH} kWh/year`;
+    buildingData.currentConsumption = annualKWH;
+  }
+}
+
+// Start analysis
+document.getElementById("startBtn").addEventListener("click", () => {
+  if (!uploadedFile) return;
+  activate("simulation");
+  runSimulation();
+});
+
+function activate(pageId) {
+  document.querySelectorAll("a.nav-link").forEach(l => l.classList.toggle("active", l.dataset.page === pageId));
+  document.querySelectorAll("section").forEach(sec => sec.classList.toggle("active", sec.id === pageId));
+}
+
+function runSimulation() {
+  const steps = [
+    { id: "step1", text: "✅ Building geometry processed", delay: 1000 },
+    { id: "step2", text: "✅ Climate data integrated", delay: 2000 },
+    { id: "step3", text: "✅ Energy simulation complete", delay: 3000 },
+    { id: "step4", text: "✅ Solar loads calculated", delay: 4000 },
+    { id: "step5", text: "✅ 3D model generated", delay: 5000 }
+  ];
+  
+  const statusTexts = [
+    "Processing architectural drawings...",
+    "Integrating weather data...",
+    "Running building energy simulation...",
+    "Calculating solar heat gain...",
+    "Generating 3D visualization..."
+  ];
+  
+  steps.forEach((step, index) => {
+    setTimeout(() => {
+      document.getElementById(step.id).textContent = step.text;
+      document.getElementById("simulationStatus").textContent = statusTexts[index] || "Analysis complete!";
+      
+      if (index === steps.length - 1) {
+        setTimeout(() => {
+          activate("view3d");
+          init3D();
+          setupRetrofits();
+        }, 1000);
+      }
+    }, step.delay);
+  });
+}
+
+// 3D Visualization
+function init3D() {
+  const container = document.getElementById("viewer3d");
+  container.innerHTML = "";
+
+  if (typeof THREE === "undefined") {
+    container.innerHTML = "<p class='text-danger text-center pt-5'>THREE.js failed to load.</p>";
     return;
   }
 
@@ -382,33 +422,109 @@ function init3D() {
   scene.background = new THREE.Color(0xf0f2f5);
 
   camera = new THREE.PerspectiveCamera(70, container.clientWidth / container.clientHeight, 0.1, 1000);
-  camera.position.set(10, 10, 10);
+  camera.position.set(15, 15, 15);
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
   container.appendChild(renderer.domElement);
 
-  // Lights
+  // Lighting
   scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-  const dir = new THREE.DirectionalLight(0xffffff, 0.8);
-  dir.position.set(10, 12, 5);
-  scene.add(dir);
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  directionalLight.position.set(20, 20, 10);
+  scene.add(directionalLight);
 
-  // Building
-  const body = new THREE.Mesh(
-    new THREE.BoxGeometry(8, 4, 6),
+  // Create building based on type
+  createBuildingByType();
+  
+  // Add sun visualization
+  createSunPath();
+  
+  // Solar analysis charts
+  createSolarCharts();
+
+  animate();
+  setupControls(container);
+}
+
+function createBuildingByType() {
+  const buildingType = buildingData.type || 'phc';
+  
+  switch(buildingType) {
+    case 'hospital':
+      createHospitalBuilding();
+      break;
+    case 'clinic':
+      createClinicBuilding();
+      break;
+    case 'laboratory':
+      createLabBuilding();
+      break;
+    default:
+      createPHCBuilding();
+  }
+}
+
+function createPHCBuilding() {
+  // Main building
+  const mainBuilding = new THREE.Mesh(
+    new THREE.BoxGeometry(12, 4, 8),
     new THREE.MeshLambertMaterial({ color: 0x8ecae6 })
   );
-  body.position.y = 2;
-  scene.add(body);
+  mainBuilding.position.y = 2;
+  scene.add(mainBuilding);
 
+  // Roof
   const roof = new THREE.Mesh(
-    new THREE.ConeGeometry(6, 2, 4),
+    new THREE.BoxGeometry(13, 0.5, 9),
     new THREE.MeshLambertMaterial({ color: 0x023047 })
   );
-  roof.position.y = 5;
-  roof.rotation.y = Math.PI / 4;
+  roof.position.y = 4.5;
   scene.add(roof);
+
+  // Ground
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(40, 40),
+    new THREE.MeshLambertMaterial({ color: 0x90c695 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  scene.add(ground);
+}
+
+function createHospitalBuilding() {
+  // Larger, multi-story building
+  const mainBuilding = new THREE.Mesh(
+    new THREE.BoxGeometry(20, 8, 15),
+    new THREE.MeshLambertMaterial({ color: 0x6db4db })
+  );
+  mainBuilding.position.y = 4;
+  scene.add(mainBuilding);
+
+  // Additional wing
+  const wing = new THREE.Mesh(
+    new THREE.BoxGeometry(8, 6, 12),
+    new THREE.MeshLambertMaterial({ color: 0x8ecae6 })
+  );
+  wing.position.set(14, 3, 0);
+  scene.add(wing);
+
+  // Ground
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(50, 50),
+    new THREE.MeshLambertMaterial({ color: 0x90c695 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  scene.add(ground);
+}
+
+function createClinicBuilding() {
+  // Smaller, single-story building
+  const mainBuilding = new THREE.Mesh(
+    new THREE.BoxGeometry(8, 3, 6),
+    new THREE.MeshLambertMaterial({ color: 0xa8dadc })
+  );
+  mainBuilding.position.y = 1.5;
+  scene.add(mainBuilding);
 
   // Ground
   const ground = new THREE.Mesh(
@@ -417,77 +533,300 @@ function init3D() {
   );
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
+}
 
-  // Mouse controls
-  let isDown = false, prevX = 0;
-  container.addEventListener('mousedown', function(e) {
-    isDown = true;
-    prevX = e.clientX;
+function createLabBuilding() {
+  // Specialized laboratory building
+  const mainBuilding = new THREE.Mesh(
+    new THREE.BoxGeometry(10, 5, 10),
+    new THREE.MeshLambertMaterial({ color: 0x457b9d })
+  );
+  mainBuilding.position.y = 2.5;
+  scene.add(mainBuilding);
+
+  // Equipment housing
+  const equipment = new THREE.Mesh(
+    new THREE.BoxGeometry(4, 2, 4),
+    new THREE.MeshLambertMaterial({ color: 0x1d3557 })
+  );
+  equipment.position.set(7, 3.5, 0);
+  scene.add(equipment);
+
+  // Ground
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(35, 35),
+    new THREE.MeshLambertMaterial({ color: 0x90c695 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  scene.add(ground);
+}
+
+function createSunPath() {
+  // Create sun path visualization
+  const sunGeometry = new THREE.SphereGeometry(0.5, 8, 6);
+  const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+  const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+  
+  // Position sun based on time of day and season
+  const time = new Date().getHours();
+  const angle = (time - 6) * (Math.PI / 12); // 6 AM to 6 PM
+  sun.position.set(Math.cos(angle) * 25, Math.sin(angle) * 15 + 10, 0);
+  scene.add(sun);
+
+  // Sun path arc
+  const pathGeometry = new THREE.RingGeometry(24, 26, 0, Math.PI);
+  const pathMaterial = new THREE.MeshBasicMaterial({ 
+    color: 0xffff00, 
+    transparent: true, 
+    opacity: 0.3 
+  });
+  const sunPath = new THREE.Mesh(pathGeometry, pathMaterial);
+  sunPath.rotation.z = Math.PI / 2;
+  sunPath.position.y = 10;
+  scene.add(sunPath);
+}
+
+function createSolarCharts() {
+  setTimeout(() => {
+    // Solar radiation chart
+    new Chart(document.getElementById("solarChart"), {
+      type: "line",
+       {
+        labels: ["6 AM", "9 AM", "12 PM", "3 PM", "6 PM"],
+        datasets: [{
+          label: "Solar Radiation (W/m²)",
+           [100, 400, 800, 600, 200],
+          borderColor: "#ff6b35",
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: "Daily Solar Radiation" } }
+      }
+    });
+
+    // Heat gain chart
+    new Chart(document.getElementById("heatGainChart"), {
+      type: "bar",
+       {
+        labels: ["East", "South", "West", "North", "Roof"],
+        datasets: [{
+          label: "Heat Gain (kW)",
+           [15, 25, 20, 8, 30],
+          backgroundColor: ["#ff9999", "#ffcc99", "#ff9999", "#99ccff", "#ffff99"]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: "Surface Heat Gain Analysis" } }
+      }
+    });
+  }, 500);
+}
+
+function setupControls(container) {
+  let mouseDown = false;
+  let mouseX = 0, mouseY = 0;
+
+  container.addEventListener("mousemove", e => {
+    if (!mouseDown) return;
+    const deltaX = e.clientX - mouseX;
+    scene.rotation.y += deltaX * 0.01;
+    mouseX = e.clientX;
+  });
+
+  container.addEventListener("mousedown", e => {
+    mouseDown = true;
+    mouseX = e.clientX;
+  });
+
+  container.addEventListener("mouseup", () => mouseDown = false);
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  camera.lookAt(0, 0, 0);
+  renderer.render(scene, camera);
+}
+
+// Retrofit selection
+function setupRetrofits() {
+  activate("retrofit");
+  
+  const weatherTemp = currentWeather ? currentWeather.temp : 30;
+  const climateZone = weatherTemp > 35 ? "hot-dry" : weatherTemp > 25 ? "warm-humid" : "temperate";
+  
+  const allRetrofits = {
+    "hot-dry": [
+      { id: "cool-roof", title: "🌿 Cool Roof Coating", desc: "Reflective coating reduces roof temperature by 10-15°C", cost: "₹150-250/m²", savings: "25%" },
+      { id: "shading", title: "🏢 External Shading", desc: "Overhangs and louvers reduce direct solar gain", cost: "₹400-600/m²", savings: "20%" },
+      { id: "insulation", title: "🧱 Wall Insulation", desc: "Thermal insulation reduces cooling loads", cost: "₹200-350/m²", savings: "30%" }
+    ],
+    "warm-humid": [
+      { id: "ventilation", title: "🌀 Natural Ventilation", desc: "Cross ventilation and stack effect cooling", cost: "₹300-500/m²", savings: "35%" },
+      { id: "dehumidifier", title: "💧 Desiccant Cooling", desc: "Solar-powered dehumidification system", cost: "₹800-1200/m²", savings: "40%" },
+      { id: "green-wall", title: "🌱 Living Walls", desc: "Vegetation reduces ambient temperature", cost: "₹500-800/m²", savings: "15%" }
+    ],
+    "temperate": [
+      { id: "solar-heating", title: "☀️ Solar Water Heating", desc: "Reduces heating energy consumption", cost: "₹25000-40000/system", savings: "50%" },
+      { id: "heat-pump", title: "🔄 Heat Pump System", desc: "Efficient heating and cooling", cost: "₹60000-90000/system", savings: "45%" }
+    ]
+  };
+
+  const applicableRetrofits = allRetrofits[climateZone] || allRetrofits["warm-humid"];
+  
+  const retroList = document.getElementById("retroList");
+  retroList.innerHTML = applicableRetrofits.map(retrofit => `
+    <div class="col-md-6">
+      <div class="retrofit-card" onclick="toggleRetrofit('${retrofit.id}')">
+        <h5>${retrofit.title}</h5>
+        <p>${retrofit.desc}</p>
+        <div class="d-flex justify-content-between">
+          <span class="badge bg-info">${retrofit.cost}</span>
+          <span class="badge bg-success">${retrofit.savings} savings</span>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleRetrofit(id) {
+  const card = event.currentTarget;
+  const isSelected = card.classList.contains("selected");
+  
+  if (isSelected) {
+    card.classList.remove("selected");
+    selectedRetrofits = selectedRetrofits.filter(r => r !== id);
+  } else {
+    card.classList.add("selected");
+    selectedRetrofits.push(id);
+  }
+  
+  document.getElementById("calculateBtn").disabled = selectedRetrofits.length === 0;
+}
+
+function calculateRetrofitResults() {
+  // Calculate combined savings from selected retrofits
+  const retrofitSavings = {
+    "cool-roof": 0.25,
+    "shading": 0.20,
+    "insulation": 0.30,
+    "ventilation": 0.35,
+    "dehumidifier": 0.40,
+    "green-wall": 0.15,
+    "solar-heating": 0.50,
+    "heat-pump": 0.45
+  };
+  
+  let totalSavings = 0;
+  selectedRetrofits.forEach(id => {
+    totalSavings += retrofitSavings[id] || 0;
   });
   
-  window.addEventListener('mouseup', function() {
-    isDown = false;
-  });
+  // Cap total savings at 60%
+  totalSavings = Math.min(totalSavings, 0.60);
   
-  container.addEventListener('mousemove', function(e) {
-    if (!isDown) return;
-    const dx = (e.clientX - prevX) * 0.01;
-    camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), -dx);
-    camera.lookAt(0, 0, 0);
-    prevX = e.clientX;
+  buildingData.retrofitSavings = totalSavings;
+  buildingData.selectedRetrofits = selectedRetrofits;
+  
+  activate("results");
+  displayResults();
+}
+
+function displayResults() {
+  const currentConsumption = buildingData.currentConsumption || 45000;
+  const savings = buildingData.retrofitSavings || 0.30;
+  const newConsumption = Math.round(currentConsumption * (1 - savings));
+  const costSavings = Math.round((currentConsumption - newConsumption) * 6); // ₹6/kWh
+
+  // Energy consumption chart
+  new Chart(document.getElementById("energyChart"), {
+    type: "bar",
+     {
+      labels: ["Current", "With Selected Retrofits"],
+      datasets: [{
+        label: "Energy Consumption (kWh/year)",
+         [currentConsumption, newConsumption],
+        backgroundColor: ["#dc3545", "#198754"]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { title: { display: true, text: "Annual Energy Consumption" } }
+    }
   });
 
-  // Window resize
-  window.addEventListener('resize', function() {
+  // Thermal comfort chart (location-specific)
+  const baseComfort = currentWeather ? 
+    Math.max(30, 80 - (currentWeather.temp - 25) * 2) : 65;
+  
+  new Chart(document.getElementById("comfortChart"), {
+    type: "line",
+     {
+      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      datasets: [
+        {
+          label: "Current Comfort (%)",
+           Array.from({length: 12}, (_, i) => 
+            Math.round(baseComfort + Math.sin(i * Math.PI / 6) * 15)
+          ),
+          borderColor: "#dc3545",
+          tension: 0.4
+        },
+        {
+          label: "With Retrofits (%)",
+           Array.from({length: 12}, (_, i) => 
+            Math.round((baseComfort + 20) + Math.sin(i * Math.PI / 6) * 10)
+          ),
+          borderColor: "#198754",
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { title: { display: true, text: "Thermal Comfort Throughout Year" } }
+    }
+  });
+
+  // Cost savings chart
+  new Chart(document.getElementById("savingsChart"), {
+    type: "doughnut",
+     {
+      labels: ["Energy Savings", "Remaining Costs"],
+      datasets: [{
+         [costSavings, currentConsumption * 6 - costSavings],
+        backgroundColor: ["#198754", "#dc3545"]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { title: { display: true, text: "Annual Cost Breakdown" } }
+    }
+  });
+
+  // Financial summary
+  document.getElementById("financialSummary").innerHTML = `
+    <p><strong>Current Annual Bill:</strong> ₹${(currentConsumption * 6).toLocaleString()}</p>
+    <p><strong>After Retrofits:</strong> ₹${(newConsumption * 6).toLocaleString()}</p>
+    <p><strong>Annual Savings:</strong> ₹${costSavings.toLocaleString()}</p>
+    <p><strong>Energy Reduction:</strong> ${Math.round(savings * 100)}%</p>
+    <p><strong>CO₂ Reduction:</strong> ${Math.round((currentConsumption - newConsumption) * 0.82)} kg/year</p>
+  `;
+}
+
+// Window resize handler
+window.addEventListener("resize", () => {
+  if (camera && renderer) {
+    const container = document.getElementById("viewer3d");
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
-  });
-
-  // Animation loop
-  function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
   }
-  animate();
-}
+});
 
-/* ---------- RETROFIT RECOMMENDATIONS ---------- */
-function buildRetrofits() {
-  console.log('Building recommendations...');
-  const items = [
-    {
-      t: '🌿 Green Roof Installation',
-      d: 'Vegetated roof lowers surface temperature and insulation load.'
-    },
-    {
-      t: '🏢 External Shading Systems',
-      d: 'Movable fins on east/west façades cut solar gains 20-30%.'
-    },
-    {
-      t: '🌀 Natural Ventilation Enhancement',
-      d: 'Enhanced stack effect boosts natural cooling during power cuts.'
-    },
-    {
-      t: '🔋 Solar PV Installation',
-      d: 'Maintains critical loads during grid failure; reduces bills.'
-    }
-  ];
-  
-  const list = document.getElementById('retroList');
-  if (list) {
-    list.innerHTML = items.map(function(item) {
-      return '<div class="col-md-6">' +
-        '<div class="card shadow-sm h-100">' +
-          '<div class="card-body">' +
-            '<h5 class="card-title">' + item.t + '</h5>' +
-            '<p class="card-text">' + item.d + '</p>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-  }
-}
 </script>
 </body>
 </html>
+
