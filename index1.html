@@ -182,8 +182,8 @@
                 <label>Location Coordinates:</label>
                 <input type="text" id="coordinates" placeholder="28.6139, 77.2090 (Delhi)" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 5px;">
             </div>
-            
-            <button class="btn" onclick="startAnalysis()">🚀 Start Climate Analysis</button>
+            <!-- 1.  Give the button an ID and REMOVE any inline onclick -->
+<button id="startBtn" class="btn">🚀 Start Climate Analysis</button>
         </div>
 
         <div id="results" class="results-section">
@@ -512,5 +512,19 @@
             }
         });
     </script>
+    <!-- 2.  Place this script block **after** all other scripts, just before </body> -->
+<script>
+  // Wait until the whole document is ready
+  window.addEventListener('DOMContentLoaded', () => {
+    const startButton = document.getElementById('startBtn');
+
+    // Attach the click handler safely
+    startButton.addEventListener('click', event => {
+      event.preventDefault();          // stop any accidental form submission
+      startAnalysis();                 // run your existing analysis routine
+    });
+  });
+</script>
+
 </body>
 </html>
