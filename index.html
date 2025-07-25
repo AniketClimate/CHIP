@@ -102,7 +102,7 @@
 function switchTab(id){document.querySelectorAll('a.nav-link').forEach(l=>l.classList.toggle('active',l.dataset.page===id));document.querySelectorAll('section').forEach(s=>s.classList.toggle('active',s.id===id));}
 document.addEventListener('click',e=>{const link=e.target.closest('a.nav-link[data-page]');if(link){e.preventDefault();switchTab(link.dataset.page);}});
 /* ---- VARIABLES ---- */
-let uploadedFile=null,currentWeather=null,buildingData={},selectedRetrofits=[],scene,camera,renderer;
+let uploadedFile=null,currentWeather=null,buildingData={},selectedRetrofits=[],scene,camera,renderer,controls;
 /* ---- UPLOAD ---- */
 fileInput.addEventListener('change',e=>{const f=e.target.files[0];if(f){uploadedFile=f;uploadMsg.textContent='✔️ '+f.name;startBtn.disabled=false;buildingData.type=buildingType.value;}});
 coords.value='28.6139, 77.2090';
@@ -112,9 +112,7 @@ function calculateFromBill(){const b=parseFloat(monthlyBill.value);if(b){buildin
 startBtn.addEventListener('click',()=>{switchTab('simulation');simulate();});
 function simulate(){const steps=['step1','step2','step3','step4','step5'];steps.forEach((id,i)=>setTimeout(()=>{document.getElementById(id).textContent='✅ '+document.getElementById(id).textContent.slice(2);if(i===steps.length-1){setTimeout(()=>{switchTab('view3d');init3D();setupRetrofits();},500);}},(i+1)*1000));}
 /* ---- 3D & SOLAR ---- */
-let controls; // Add at global level
-
-function init3D() {
+  function init3D() {
   const c = document.getElementById('viewer3d');
   c.innerHTML = '';
   scene = new THREE.Scene();
