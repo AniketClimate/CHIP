@@ -264,33 +264,81 @@ let buildingData = {};
 let selectedRetrofits = [];
 let scene, camera, renderer;
 
-// Page navigation
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll("a.nav-link").forEach(link => {
-    link.addEventListener("click", e => {
+// Fixed tab navigation - load after page is ready
+window.addEventListener('load', function() {
+  console.log('Page loaded, setting up navigation');
+  setupNavigation();
+  setupFileUpload();
+  setupStartButton();
+});
+
+function setupNavigation() {
+  const navLinks = document.querySelectorAll("a.nav-link");
+  console.log('Found nav links:', navLinks.length);
+  
+  navLinks.forEach(link => {
+    link.addEventListener("click", function(e) {
       e.preventDefault();
+      console.log('Tab clicked:', link.dataset.page);
+      
       const page = link.dataset.page;
-      document.querySelectorAll("a.nav-link").forEach(l => l.classList.toggle("active", l === link));
-      document.querySelectorAll("section").forEach(sec => sec.classList.toggle("active", sec.id === page));
+      
+      // Update active nav link
+      navLinks.forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+      
+      // Show/hide sections
+      const sections = document.querySelectorAll("section");
+      sections.forEach(sec => sec.classList.remove("active"));
+      
+      const targetSection = document.getElementById(page);
+      if (targetSection) {
+        targetSection.classList.add("active");
+        console.log('Activated section:', page);
+      } else {
+        console.error('Section not found:', page);
+      }
     });
   });
-});
+}
 
-// File upload handling
-document.getElementById("fileInput").addEventListener("change", e => {
-  const file = e.target.files[0];
-  if (file) {
-    uploadedFile = file;
-    document.getElementById("uploadMsg").textContent = "✔️ " + file.name + " uploaded successfully.";
-    document.getElementById("startBtn").disabled = false;
-    
-    // Simulate building analysis
-    analyzeBuildingType(file.name);
-  }
-});
+function setupFileUpload() {
+  const fileInput = document.getElementById("fileInput");
+  fileInput.addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      uploadedFile = file;
+      document.getElementById("uploadMsg").textContent = "✔️ " + file.name + " uploaded successfully.";
+      document.getElementById("startBtn").disabled = false;
+      analyzeBuildingType(file.name);
+    }
+  });
+}
+
+function setupStartButton() {
+  const startBtn = document.getElementById("startBtn");
+  startBtn.addEventListener("click", function() {
+    if (!uploadedFile) return;
+    activateTab("simulation");
+    runSimulation();
+  });
+}
+
+function activateTab(pageId) {
+  console.log('Activating tab:', pageId);
+  
+  // Update nav links
+  document.querySelectorAll("a.nav-link").forEach(l => {
+    l.classList.toggle("active", l.dataset.page === pageId);
+  });
+  
+  // Show/hide sections
+  document.querySelectorAll("section").forEach(sec => {
+    sec.classList.toggle("active", sec.id === pageId);
+  });
+}
 
 function analyzeBuildingType(filename) {
-  // Simulate building analysis based on filename or user selection
   const type = document.getElementById("buildingType").value;
   buildingData.type = type;
   buildingData.filename = filename;
@@ -302,7 +350,6 @@ async function fetchWeatherData() {
   const [lat, lon] = coords.split(",").map(s => s.trim());
   
   try {
-    // Using a mock weather API response for demo
     const mockWeatherData = {
       temp: Math.round(25 + Math.random() * 15),
       humidity: Math.round(45 + Math.random() * 30),
@@ -345,7 +392,6 @@ function displayWeatherData(data) {
 function estimateEnergy() {
   const area = parseFloat(document.getElementById("buildingArea").value);
   if (area) {
-    // Estimate based on 150-200 kWh/m²/year for healthcare facilities in India
     const estimation = Math.round(area * 175);
     document.getElementById("estimatedConsumption").value = `${estimation} kWh/year`;
     buildingData.currentConsumption = estimation;
@@ -355,24 +401,11 @@ function estimateEnergy() {
 function calculateFromBill() {
   const bill = parseFloat(document.getElementById("monthlyBill").value);
   if (bill) {
-    // Assuming ₹6/kWh average tariff
     const monthlyKWH = Math.round(bill / 6);
     const annualKWH = monthlyKWH * 12;
     document.getElementById("estimatedConsumption").value = `${annualKWH} kWh/year`;
     buildingData.currentConsumption = annualKWH;
   }
-}
-
-// Start analysis
-document.getElementById("startBtn").addEventListener("click", () => {
-  if (!uploadedFile) return;
-  activate("simulation");
-  runSimulation();
-});
-
-function activate(pageId) {
-  document.querySelectorAll("a.nav-link").forEach(l => l.classList.toggle("active", l.dataset.page === pageId));
-  document.querySelectorAll("section").forEach(sec => sec.classList.toggle("active", sec.id === pageId));
 }
 
 function runSimulation() {
@@ -399,7 +432,7 @@ function runSimulation() {
       
       if (index === steps.length - 1) {
         setTimeout(() => {
-          activate("view3d");
+          activateTab("view3d");
           init3D();
           setupRetrofits();
         }, 1000);
@@ -434,13 +467,8 @@ function init3D() {
   directionalLight.position.set(20, 20, 10);
   scene.add(directionalLight);
 
-  // Create building based on type
   createBuildingByType();
-  
-  // Add sun visualization
   createSunPath();
-  
-  // Solar analysis charts
   createSolarCharts();
 
   animate();
@@ -466,7 +494,6 @@ function createBuildingByType() {
 }
 
 function createPHCBuilding() {
-  // Main building
   const mainBuilding = new THREE.Mesh(
     new THREE.BoxGeometry(12, 4, 8),
     new THREE.MeshLambertMaterial({ color: 0x8ecae6 })
@@ -474,7 +501,6 @@ function createPHCBuilding() {
   mainBuilding.position.y = 2;
   scene.add(mainBuilding);
 
-  // Roof
   const roof = new THREE.Mesh(
     new THREE.BoxGeometry(13, 0.5, 9),
     new THREE.MeshLambertMaterial({ color: 0x023047 })
@@ -482,7 +508,6 @@ function createPHCBuilding() {
   roof.position.y = 4.5;
   scene.add(roof);
 
-  // Ground
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(40, 40),
     new THREE.MeshLambertMaterial({ color: 0x90c695 })
@@ -492,7 +517,6 @@ function createPHCBuilding() {
 }
 
 function createHospitalBuilding() {
-  // Larger, multi-story building
   const mainBuilding = new THREE.Mesh(
     new THREE.BoxGeometry(20, 8, 15),
     new THREE.MeshLambertMaterial({ color: 0x6db4db })
@@ -500,7 +524,6 @@ function createHospitalBuilding() {
   mainBuilding.position.y = 4;
   scene.add(mainBuilding);
 
-  // Additional wing
   const wing = new THREE.Mesh(
     new THREE.BoxGeometry(8, 6, 12),
     new THREE.MeshLambertMaterial({ color: 0x8ecae6 })
@@ -508,7 +531,6 @@ function createHospitalBuilding() {
   wing.position.set(14, 3, 0);
   scene.add(wing);
 
-  // Ground
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(50, 50),
     new THREE.MeshLambertMaterial({ color: 0x90c695 })
@@ -518,7 +540,6 @@ function createHospitalBuilding() {
 }
 
 function createClinicBuilding() {
-  // Smaller, single-story building
   const mainBuilding = new THREE.Mesh(
     new THREE.BoxGeometry(8, 3, 6),
     new THREE.MeshLambertMaterial({ color: 0xa8dadc })
@@ -526,7 +547,6 @@ function createClinicBuilding() {
   mainBuilding.position.y = 1.5;
   scene.add(mainBuilding);
 
-  // Ground
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(30, 30),
     new THREE.MeshLambertMaterial({ color: 0x90c695 })
@@ -536,7 +556,6 @@ function createClinicBuilding() {
 }
 
 function createLabBuilding() {
-  // Specialized laboratory building
   const mainBuilding = new THREE.Mesh(
     new THREE.BoxGeometry(10, 5, 10),
     new THREE.MeshLambertMaterial({ color: 0x457b9d })
@@ -544,7 +563,6 @@ function createLabBuilding() {
   mainBuilding.position.y = 2.5;
   scene.add(mainBuilding);
 
-  // Equipment housing
   const equipment = new THREE.Mesh(
     new THREE.BoxGeometry(4, 2, 4),
     new THREE.MeshLambertMaterial({ color: 0x1d3557 })
@@ -552,7 +570,6 @@ function createLabBuilding() {
   equipment.position.set(7, 3.5, 0);
   scene.add(equipment);
 
-  // Ground
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(35, 35),
     new THREE.MeshLambertMaterial({ color: 0x90c695 })
@@ -562,18 +579,15 @@ function createLabBuilding() {
 }
 
 function createSunPath() {
-  // Create sun path visualization
   const sunGeometry = new THREE.SphereGeometry(0.5, 8, 6);
   const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
   const sun = new THREE.Mesh(sunGeometry, sunMaterial);
   
-  // Position sun based on time of day and season
   const time = new Date().getHours();
-  const angle = (time - 6) * (Math.PI / 12); // 6 AM to 6 PM
+  const angle = (time - 6) * (Math.PI / 12);
   sun.position.set(Math.cos(angle) * 25, Math.sin(angle) * 15 + 10, 0);
   scene.add(sun);
 
-  // Sun path arc
   const pathGeometry = new THREE.RingGeometry(24, 26, 0, Math.PI);
   const pathMaterial = new THREE.MeshBasicMaterial({ 
     color: 0xffff00, 
@@ -588,7 +602,6 @@ function createSunPath() {
 
 function createSolarCharts() {
   setTimeout(() => {
-    // Solar radiation chart
     new Chart(document.getElementById("solarChart"), {
       type: "line",
        {
@@ -606,7 +619,6 @@ function createSolarCharts() {
       }
     });
 
-    // Heat gain chart
     new Chart(document.getElementById("heatGainChart"), {
       type: "bar",
        {
@@ -652,7 +664,7 @@ function animate() {
 
 // Retrofit selection
 function setupRetrofits() {
-  activate("retrofit");
+  activateTab("retrofit");
   
   const weatherTemp = currentWeather ? currentWeather.temp : 30;
   const climateZone = weatherTemp > 35 ? "hot-dry" : weatherTemp > 25 ? "warm-humid" : "temperate";
@@ -692,22 +704,31 @@ function setupRetrofits() {
 }
 
 function toggleRetrofit(id) {
-  const card = event.currentTarget;
-  const isSelected = card.classList.contains("selected");
+  const cards = document.querySelectorAll('.retrofit-card');
+  let selectedCard = null;
   
-  if (isSelected) {
-    card.classList.remove("selected");
-    selectedRetrofits = selectedRetrofits.filter(r => r !== id);
-  } else {
-    card.classList.add("selected");
-    selectedRetrofits.push(id);
+  cards.forEach(card => {
+    if (card.onclick.toString().includes(id)) {
+      selectedCard = card;
+    }
+  });
+  
+  if (selectedCard) {
+    const isSelected = selectedCard.classList.contains("selected");
+    
+    if (isSelected) {
+      selectedCard.classList.remove("selected");
+      selectedRetrofits = selectedRetrofits.filter(r => r !== id);
+    } else {
+      selectedCard.classList.add("selected");
+      selectedRetrofits.push(id);
+    }
+    
+    document.getElementById("calculateBtn").disabled = selectedRetrofits.length === 0;
   }
-  
-  document.getElementById("calculateBtn").disabled = selectedRetrofits.length === 0;
 }
 
 function calculateRetrofitResults() {
-  // Calculate combined savings from selected retrofits
   const retrofitSavings = {
     "cool-roof": 0.25,
     "shading": 0.20,
@@ -724,13 +745,12 @@ function calculateRetrofitResults() {
     totalSavings += retrofitSavings[id] || 0;
   });
   
-  // Cap total savings at 60%
   totalSavings = Math.min(totalSavings, 0.60);
   
   buildingData.retrofitSavings = totalSavings;
   buildingData.selectedRetrofits = selectedRetrofits;
   
-  activate("results");
+  activateTab("results");
   displayResults();
 }
 
@@ -738,9 +758,8 @@ function displayResults() {
   const currentConsumption = buildingData.currentConsumption || 45000;
   const savings = buildingData.retrofitSavings || 0.30;
   const newConsumption = Math.round(currentConsumption * (1 - savings));
-  const costSavings = Math.round((currentConsumption - newConsumption) * 6); // ₹6/kWh
+  const costSavings = Math.round((currentConsumption - newConsumption) * 6);
 
-  // Energy consumption chart
   new Chart(document.getElementById("energyChart"), {
     type: "bar",
      {
@@ -757,7 +776,6 @@ function displayResults() {
     }
   });
 
-  // Thermal comfort chart (location-specific)
   const baseComfort = currentWeather ? 
     Math.max(30, 80 - (currentWeather.temp - 25) * 2) : 65;
   
@@ -790,7 +808,6 @@ function displayResults() {
     }
   });
 
-  // Cost savings chart
   new Chart(document.getElementById("savingsChart"), {
     type: "doughnut",
      {
@@ -806,7 +823,6 @@ function displayResults() {
     }
   });
 
-  // Financial summary
   document.getElementById("financialSummary").innerHTML = `
     <p><strong>Current Annual Bill:</strong> ₹${(currentConsumption * 6).toLocaleString()}</p>
     <p><strong>After Retrofits:</strong> ₹${(newConsumption * 6).toLocaleString()}</p>
@@ -829,4 +845,3 @@ window.addEventListener("resize", () => {
 </script>
 </body>
 </html>
-
