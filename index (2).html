@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CHIP – Climate-Resilient PHC Tool</title>
+
+<!-- CSS libraries -->
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  rel="stylesheet"
+/>
+
+<!-- THREE.js & Chart.js – MUST load before our scripts -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<style>
+  body {
+    background: #f5f7fa;
+  }
+  nav a.nav-link {
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+  }
+  nav a.nav-link:hover {
+    color: #ffffff !important;
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 5px;
+  }
+  section {
+    display: none;
+    padding: 2rem 0;
+  }
+  section.active {
+    display: block;
+  }
+  #viewer3d {
+    height: 450px;
+    background: #eef1f5;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .upload-box {
+    border: 2px dashed #0d6efd;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .upload-box:hover {
+    background: #f0f8ff;
+  }
+</style>
+</head>
+
+<body>
+<!-- NAVIGATION BAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">CHIP Demo</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navTabs"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navTabs">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" id="tab-home">Home</a></li>
+        <li class="nav-item"><a class="nav-link" id="tab-upload">Upload</a></li>
+        <li class="nav-item"><a class="nav-link" id="tab-simulation">Simulation</a></li>
+        <li class="nav-item"><a class="nav-link" id="tab-results">Results</a></li>
+        <li class="nav-item"><a class="nav-link" id="tab-view3d">3D View</a></li>
+        <li class="nav-item"><a class="nav-link" id="tab-retrofit">Retrofit</a></li>
+        <li class="nav-item"><a class="nav-link" id="tab-architecture">Architecture</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+
+<!-- HOME SECTION -->
+<section id="section-home" class="active">
+  <h2 class="mb-3">Welcome to CHIP</h2>
+  <p>
+    This tool helps primary health centres assess climate risks, simulate
+    cooling strategies and discover retrofit options before extreme events
+    strike.
+  </p>
+  <p class="lead">
+    Start by uploading your building drawings and geolocation in the Upload tab.
+  </p>
+</section>
+
+<!-- UPLOAD SECTION -->
+<section id="section-upload">
+  <h2 class="mb-3">Upload Building Data</h2>
+
+  <div class="upload-box mb-3" id="uploadArea">
+    <i class="fa-solid fa-cloud-arrow-up fa-2xl text-primary mb-3"></i>
+    <p class="mb-0 fw-semibold" id="uploadText">Click to upload drawings (PDF, DWG, Images)</p>
+    <input type="file" id="fileInput" accept=".pdf,.dwg,.png,.jpg,.jpeg" style="display: none;"/>
+  </div>
+
+  <div class="mb-3">
+    <label for="coords" class="form-label fw-semibold">Location Coordinates (lat, lon)</label>
+    <input type="text" class="form-control" id="coords" placeholder="28.6139, 77.2090"/>
+  </div>
+
+  <button id="startBtn" class="btn btn-primary" disabled>
+    🚀 Start Climate Analysis
+  </button>
+  <div id="uploadMsg" class="mt-3 fw-semibold text-success"></div>
+</section>
+
+<!-- SIMULATION SECTION -->
+<section id="section-simulation">
+  <h2 class="mb-3">Simulation in Progress</h2>
+  <div class="d-flex flex-column align-items-center">
+    <div
+      class="spinner-border text-primary"
+      role="status"
+      style="width: 4rem; height: 4rem"
+    ></div>
+    <p class="mt-3">Analyzing building performance and climate data…</p>
+  </div>
+</section>
+
+<!-- RESULTS SECTION -->
+<section id="section-results">
+  <h2 class="mb-4">Analysis Results</h2>
+  <div class="row g-4">
+    <div class="col-md-6">
+      <canvas id="energyChart"></canvas>
+    </div>
+    <div class="col-md-6">
+      <canvas id="comfortChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- 3D VIEW SECTION -->
+<section id="section-view3d">
+  <h2 class="mb-3">Interactive 3-D Building Model</h2>
+  <div id="viewer3d" class="mb-3 d-flex justify-content-center align-items-center">
+    <span class="text-muted">Model loading…</span>
+  </div>
+</section>
+
+<!-- RETROFIT SECTION -->
+<section id="section-retrofit">
+  <h2 class="mb-3">Recommended Retrofits</h2>
+  <div id="retroList" class="row g-4"></div>
+</section>
+
+<!-- ARCHITECTURE SECTION -->
+<section id="section-architecture">
+  <h2 class="mb-3">How CHIP Works</h2>
+  <ol>
+    <li><strong>Upload:</strong> Drawings &amp; coordinates collected.</li>
+    <li><strong>Simulation:</strong> EnergyPlus &amp; CFD modules run in the cloud.</li>
+    <li><strong>Results:</strong> Energy, comfort, vulnerability metrics returned.</li>
+    <li><strong>3-D View:</strong> Interactive scene shows geometry and shading.</li>
+    <li><strong>Retrofit Engine:</strong> Matches local climate stressors to solutions.</li>
+  </ol>
+</section>
+</div>
+
+<!-- BOOTSTRAP JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+/* ---------- TAB NAVIGATION - FIXED VERSION ---------- */
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM loaded, setting up tabs...');
+  
+  // Get all tab links and sections
+  const tabLinks = document.querySelectorAll('a.nav-link');
+  const sections = document.querySelectorAll('section[id^="section-"]');
+  
+  console.log('Found tabs:', tabLinks.length, 'Found sections:', sections.length);
+  
+  // Add click handlers to each tab
+  tabLinks.forEach(function(tabLink) {
+    tabLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('Tab clicked:', this.id);
+      
+      // Get target section name from tab ID
+      const targetSection = this.id.replace('tab-', 'section-');
+      console.log('Target section:', targetSection);
+      
+      // Remove active class from all tabs
+      tabLinks.forEach(function(link) {
+        link.classList.remove('active');
+      });
+      
+      // Add active class to clicked tab
+      this.classList.add('active');
+      
+      // Hide all sections
+      sections.forEach(function(section) {
+        section.classList.remove('active');
+      });
+      
+      // Show target section
+      const targetElement = document.getElementById(targetSection);
+      if (targetElement) {
+        targetElement.classList.add('active');
+        console.log('Activated section:', targetSection);
+      } else {
+        console.error('Section not found:', targetSection);
+      }
+    });
+  });
+});
+
+/* ---------- UPLOAD FUNCTIONALITY ---------- */
+let fileOK = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+  const uploadArea = document.getElementById('uploadArea');
+  const fileInput = document.getElementById('fileInput');
+  const uploadText = document.getElementById('uploadText');
+  const uploadMsg = document.getElementById('uploadMsg');
+  const startBtn = document.getElementById('startBtn');
+  
+  // Upload area click handler
+  uploadArea.addEventListener('click', function() {
+    fileInput.click();
+  });
+  
+  // File input change handler
+  fileInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      fileOK = true;
+      uploadText.textContent = '✅ ' + file.name + ' uploaded successfully';
+      uploadMsg.textContent = 'File ready for analysis';
+      startBtn.disabled = false;
+    }
+  });
+  
+  // Start button handler
+  startBtn.addEventListener('click', function() {
+    if (!fileOK) {
+      alert('Please upload a file first');
+      return;
+    }
+    console.log('Starting analysis...');
+    activateTab('simulation');
+    setTimeout(runAnalysis, 2800);
+  });
+});
+
+function activateTab(pageId) {
+  console.log('Activating tab:', pageId);
+  
+  // Update nav links
+  const tabLinks = document.querySelectorAll('a.nav-link');
+  tabLinks.forEach(function(link) {
+    link.classList.remove('active');
+    if (link.id === 'tab-' + pageId) {
+      link.classList.add('active');
+    }
+  });
+  
+  // Update sections
+  const sections = document.querySelectorAll('section[id^="section-"]');
+  sections.forEach(function(section) {
+    section.classList.remove('active');
+    if (section.id === 'section-' + pageId) {
+      section.classList.add('active');
+    }
+  });
+}
+
+/* ---------- ANALYSIS SEQUENCE ---------- */
+function runAnalysis() {
+  console.log('Running analysis...');
+  activateTab('results');
+  drawCharts();
+  setTimeout(function() {
+    activateTab('view3d');
+    init3D();
+    setTimeout(function() {
+      activateTab('retrofit');
+      buildRetrofits();
+    }, 1500);
+  }, 1500);
+}
+
+function drawCharts() {
+  console.log('Drawing charts...');
+  
+  // Energy Chart
+  const energyCtx = document.getElementById('energyChart');
+  if (energyCtx) {
+    new Chart(energyCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Current', 'With Retrofit'],
+        datasets: [{
+          label: 'Energy (kWh/yr)',
+          data: [45000, 27000],
+          backgroundColor: ['#dc3545', '#198754']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Annual Energy Consumption'
+          }
+        }
+      }
+    });
+  }
+  
+  // Comfort Chart
+  const comfortCtx = document.getElementById('comfortChart');
+  if (comfortCtx) {
+    new Chart(comfortCtx, {
+      type: 'line',
+      data: {
+        labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        datasets: [{
+          label: 'Current Comfort (%)',
+          data: [65,70,60,45,35,30,32,35,50,68,75,70],
+          borderColor: '#dc3545',
+          tension: 0.4,
+          fill: false
+        }, {
+          label: 'With Retrofit (%)',
+          data: [78,82,85,80,75,70,72,75,82,85,88,85],
+          borderColor: '#198754',
+          tension: 0.4,
+          fill: false
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Thermal Comfort Throughout Year'
+          }
+        }
+      }
+    });
+  }
+}
+
+/* ---------- 3D VIEWER ---------- */
+let scene, camera, renderer;
+
+function init3D() {
+  console.log('Initializing 3D view...');
+  const container = document.getElementById('viewer3d');
+  if (!container) return;
+  
+  container.innerHTML = '';
+
+  if (typeof THREE === 'undefined') {
+    container.innerHTML = '<p class="text-danger text-center pt-5">THREE.js failed to load.</p>';
+    return;
+  }
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf0f2f5);
+
+  camera = new THREE.PerspectiveCamera(70, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.position.set(10, 10, 10);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+  dir.position.set(10, 12, 5);
+  scene.add(dir);
+
+  // Building
+  const body = new THREE.Mesh(
+    new THREE.BoxGeometry(8, 4, 6),
+    new THREE.MeshLambertMaterial({ color: 0x8ecae6 })
+  );
+  body.position.y = 2;
+  scene.add(body);
+
+  const roof = new THREE.Mesh(
+    new THREE.ConeGeometry(6, 2, 4),
+    new THREE.MeshLambertMaterial({ color: 0x023047 })
+  );
+  roof.position.y = 5;
+  roof.rotation.y = Math.PI / 4;
+  scene.add(roof);
+
+  // Ground
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(30, 30),
+    new THREE.MeshLambertMaterial({ color: 0x90c695 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  scene.add(ground);
+
+  // Mouse controls
+  let isDown = false, prevX = 0;
+  container.addEventListener('mousedown', function(e) {
+    isDown = true;
+    prevX = e.clientX;
+  });
+  
+  window.addEventListener('mouseup', function() {
+    isDown = false;
+  });
+  
+  container.addEventListener('mousemove', function(e) {
+    if (!isDown) return;
+    const dx = (e.clientX - prevX) * 0.01;
+    camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), -dx);
+    camera.lookAt(0, 0, 0);
+    prevX = e.clientX;
+  });
+
+  // Window resize
+  window.addEventListener('resize', function() {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
+
+  // Animation loop
+  function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+  }
+  animate();
+}
+
+/* ---------- RETROFIT RECOMMENDATIONS ---------- */
+function buildRetrofits() {
+  console.log('Building recommendations...');
+  const items = [
+    {
+      t: '🌿 Green Roof Installation',
+      d: 'Vegetated roof lowers surface temperature and insulation load.'
+    },
+    {
+      t: '🏢 External Shading Systems',
+      d: 'Movable fins on east/west façades cut solar gains 20-30%.'
+    },
+    {
+      t: '🌀 Natural Ventilation Enhancement',
+      d: 'Enhanced stack effect boosts natural cooling during power cuts.'
+    },
+    {
+      t: '🔋 Solar PV Installation',
+      d: 'Maintains critical loads during grid failure; reduces bills.'
+    }
+  ];
+  
+  const list = document.getElementById('retroList');
+  if (list) {
+    list.innerHTML = items.map(function(item) {
+      return '<div class="col-md-6">' +
+        '<div class="card shadow-sm h-100">' +
+          '<div class="card-body">' +
+            '<h5 class="card-title">' + item.t + '</h5>' +
+            '<p class="card-text">' + item.d + '</p>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+}
+</script>
+</body>
+</html>
