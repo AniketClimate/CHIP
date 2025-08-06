@@ -118,7 +118,7 @@
 
         <!-- NEW: Building Pictures Section -->
         <div class="form-group">
-          <label class="form-label">Building Pictures (Optional)</label>
+          <label class="form-label">Building Pictures</label>
           <p class="text-secondary mb-8">Upload photos of the building exterior, interior, roof, and key areas</p>
           
           <div class="picture-upload-grid">
@@ -268,27 +268,46 @@
     </section>
 
     <!-- Results -->
-    <section id="results" class="section container">
-      <h2 class="mb-8">4 · Results</h2>
-      <div class="flex gap-24">
-        <div style="flex:1;">
-          <h4>Energy Performance</h4>
-          <canvas id="energyChart" width="400" height="200"></canvas>
-        </div>
-        <div style="flex:1;">
-          <h4>Thermal Comfort</h4>
-          <canvas id="comfortChart" width="400" height="200"></canvas>
-        </div>
-      </div>
-
-      <div class="mt-24">
-        <h4>Climate Risk Assessment</h4>
-        <div id="riskSummary" class="card mt-8">
+    <section id="results" class="section container hidden">
+      <h2 class="mb-8">3 · Results</h2>
+      <div class="chart-grid flex flex-col gap-16">
+        <div class="card">
+          <div class="card__header"><h4>Energy Analysis</h4></div>
           <div class="card__body">
-            <p>Climate risk analysis will appear here after simulation...</p>
+            <div class="chart-container" style="position:relative;height:300px;">
+              <canvas id="energyChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__header"><h4>Solar Analysis</h4></div>
+          <div class="card__body">
+            <div class="chart-container" style="position:relative;height:300px;">
+              <canvas id="solarChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__header"><h4>Thermal Comfort</h4></div>
+          <div class="card__body">
+            <div class="chart-container" style="position:relative;height:300px;">
+              <canvas id="comfortChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__header"><h4>Climate Resilience</h4></div>
+          <div class="card__body">
+            <div class="chart-container" style="position:relative;height:300px;">
+              <canvas id="resilienceChart"></canvas>
+            </div>
           </div>
         </div>
       </div>
+      <button class="btn btn--primary mt-8" id="toVisualizer">Explore 3D Model</button>
     </section>
 
     <!-- 3D Visualizer -->
@@ -303,19 +322,22 @@
 
     <!-- Recommendations -->
     <section id="recommendations" class="section container hidden">
-      <h2 class="mb-8">6 · Retrofit Recommendations</h2>
-      <table class="table">
+      <h2 class="mb-8">5 · Retrofitting Recommendations</h2>
+      <table style="width:100%;border-collapse:collapse;">
         <thead>
           <tr>
-            <th style="text-align:left;padding:8px;border-bottom:1px solid var(--color-border);">Strategy</th>
+            <th style="text-align:left;padding:8px;border-bottom:1px solid var(--color-border);">Priority</th>
+            <th style="text-align:left;padding:8px;border-bottom:1px solid var(--color-border);">Title</th>
+            <th style="text-align:left;padding:8px;border-bottom:1px solid var(--color-border);">Savings</th>
             <th style="text-align:left;padding:8px;border-bottom:1px solid var(--color-border);">Cost</th>
+            <th style="text-align:left;padding:8px;border-bottom:1px solid var(--color-border);">Payback</th>
             <th style="text-align:left;padding:8px;border-bottom:1px solid var(--color-border);">Benefit</th>
           </tr>
         </thead>
         <tbody id="recommendationBody"></tbody>
       </table>
     </section>
-
+    
     <!-- Technical Architecture -->
     <section id="technical" class="section container hidden">
       <h2 class="mb-8">7 · Technical Architecture</h2>
@@ -442,9 +464,10 @@
           'Loading building data...',
           'Processing architectural drawings...',
           'Analyzing climate data...',
-          'Running thermal simulation...',
+          'Running sun path analysis...',
+          'Shadow Study analysis...',
+          'wind profile assessment...',
           'Calculating energy performance...',
-          'Generating 3D model...',
           'Preparing recommendations...'
         ];
         
