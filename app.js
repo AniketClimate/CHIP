@@ -346,7 +346,7 @@ function handleUpload(e) {
   };
 
   // Validate required fields
-if (!buildingData.name || !buildingData.type || !buildingData.lat) 
+if (!buildingData.name)
 {
     alert('Please fill in building name, type, and coordinates.');
     return;
