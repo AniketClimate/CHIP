@@ -346,11 +346,11 @@ function handleUpload(e) {
   };
 
   // Validate required fields
-if (!buildingData.name)
-{
-    alert('Please fill in building name, type, and coordinates.');
-    return;
-}
+//if (!buildingData.name)
+//{
+  //  alert('Please fill in building name, type, and coordinates.');
+    //return;
+//}
 
 // Check if coordinates are valid numbers
 if (isNaN(buildingData.lat) || isNaN(buildingData.lon)) {
