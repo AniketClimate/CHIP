@@ -346,10 +346,17 @@ function handleUpload(e) {
   };
 
   // Validate required fields
-  if (!buildingData.name || !buildingData.type || !buildingData.lat || !buildingData.lon || !buildingData.file) {
-    alert('Please fill in all required fields and upload a drawing.');
+if (!buildingData.name || !buildingData.type || !buildingData.lat) 
+{
+    alert('Please fill in building name, type, and coordinates.');
     return;
-  }
+}
+
+// Check if coordinates are valid numbers
+if (isNaN(buildingData.lat) || isNaN(buildingData.lon)) {
+    alert('Please enter valid latitude and longitude coordinates.');
+    return;
+}
 
   // Simulate upload progress
   showUploadProgress();
@@ -490,10 +497,10 @@ function simulateEnhancedProgress() {
     'Analyzing uploaded photographs...',
     'Integrating temperature measurements...',
     'Loading climate data for location...',
-    'Running thermal comfort simulation...',
+    'Running sun path analysis...',
+    'Conducting shadown study...',
+    'Conducting air flow simulations...',
     'Calculating energy performance...',
-    'Analyzing climate stressor impacts...',
-    'Generating 3D visualization...',
     'Preparing tailored recommendations...'
   ];
   
