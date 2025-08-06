@@ -353,10 +353,10 @@ function handleUpload(e) {
 //}
 
 // Check if coordinates are valid numbers
-if (isNaN(buildingData.lat) || isNaN(buildingData.lon)) {
-    alert('Please enter valid latitude and longitude coordinates.');
-    return;
-}
+//if (isNaN(buildingData.lat) || isNaN(buildingData.lon)) {
+  //  alert('Please enter valid latitude and longitude coordinates.');
+   // return;
+//}
 
   // Simulate upload progress
   showUploadProgress();
