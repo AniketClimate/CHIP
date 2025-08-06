@@ -22,6 +22,22 @@
       .temperature-input input { width: 80px; text-align: center; }
     </style>
   </head>
+    <script>
+function showSection(sectionId) {
+  // Hide all sections
+  document.querySelectorAll('section').forEach(sec => {
+    sec.classList.add('hidden');
+  });
+
+  // Show the selected section
+  const target = document.getElementById(sectionId);
+  if (target) {
+    target.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+</script>
+
   <body>
     <!-- Navigation -->
     <header class="container py-16 flex justify-between items-center">
@@ -63,7 +79,7 @@
     </p>
     
     <!-- CTA Button -->
-    <button class="btn btn-primary btn-lg" onclick="location.href='#upload'">
+    <button class="btn btn-primary btn-lg" onclick="showSection('upload')">
   🚀 Start Assessment
 </button>
 
