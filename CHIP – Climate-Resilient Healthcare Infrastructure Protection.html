@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<!-- saved from url=(0177)https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/4e50146bb04c3e24953c155f9195a499/9dc02a17-6b1e-474a-a235-dee9ccb38255/118ad148.html?utm_source=perplexity -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHIP – Climate-Resilient Healthcare Infrastructure Protection</title>
+    <link rel="stylesheet" href="./CHIP – Climate-Resilient Healthcare Infrastructure Protection_files/style.css">
+    <!-- Chart.js -->
+    <script src="./CHIP – Climate-Resilient Healthcare Infrastructure Protection_files/chart.js"></script>
+    <!-- Three.js core and controls -->
+    <script src="./CHIP – Climate-Resilient Healthcare Infrastructure Protection_files/three.min.js"></script>
+    <script src="./CHIP – Climate-Resilient Healthcare Infrastructure Protection_files/OrbitControls.js"></script>
+    <style>
+      .picture-upload-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px; }
+      .picture-upload-item { border: 2px dashed #ccc; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: border-color 0.3s; }
+      .picture-upload-item:hover { border-color: #007bff; }
+      .picture-preview { max-width: 100%; height: 120px; object-fit: cover; border-radius: 4px; margin-top: 8px; }
+      .form-radio-group { display: flex; gap: 16px; flex-wrap: wrap; }
+      .form-radio { display: flex; align-items: center; gap: 8px; }
+      .qualitative-question { margin-bottom: 24px; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px; background: #f9f9f9; }
+      .temperature-input { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+      .temperature-input input { width: 80px; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <header class="container py-16 flex justify-between items-center">
+      <h2 class="m-0" style="font-weight:700;">CHIP</h2>
+      <nav class="flex gap-16">
+        <a href="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/4e50146bb04c3e24953c155f9195a499/9dc02a17-6b1e-474a-a235-dee9ccb38255/118ad148.html?utm_source=perplexity#landing" class="">Home</a>
+        <a href="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/4e50146bb04c3e24953c155f9195a499/9dc02a17-6b1e-474a-a235-dee9ccb38255/118ad148.html?utm_source=perplexity#upload">Upload</a>
+        <a href="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/4e50146bb04c3e24953c155f9195a499/9dc02a17-6b1e-474a-a235-dee9ccb38255/118ad148.html?utm_source=perplexity#qualitative" class="">Research</a>
+        <a href="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/4e50146bb04c3e24953c155f9195a499/9dc02a17-6b1e-474a-a235-dee9ccb38255/118ad148.html?utm_source=perplexity#simulation" class="">Simulation</a>
+        <a href="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/4e50146bb04c3e24953c155f9195a499/9dc02a17-6b1e-474a-a235-dee9ccb38255/118ad148.html?utm_source=perplexity#results" class="active">Results</a>
+        <a href="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/4e50146bb04c3e24953c155f9195a499/9dc02a17-6b1e-474a-a235-dee9ccb38255/118ad148.html?utm_source=perplexity#visualizer">3D View</a>
+        <a href="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/4e50146bb04c3e24953c155f9195a499/9dc02a17-6b1e-474a-a235-dee9ccb38255/118ad148.html?utm_source=perplexity#recommendations">Retrofit</a>
+        <a href="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/4e50146bb04c3e24953c155f9195a499/9dc02a17-6b1e-474a-a235-dee9ccb38255/118ad148.html?utm_source=perplexity#technical">Architecture</a>
+      </nav>
+    </header>
+
+    <!-- Landing -->
+    <section id="landing" class="section container hidden">
+      <div class="hero" style="text-align:center;">
+        <h1 class="m-0 mb-8">Climate-Resilient Healthcare</h1>
+        <p class="text-secondary mb-24" style="max-width:600px;margin:0 auto;">
+          CHIP empowers hospitals and clinics to understand, simulate and improve their resilience against extreme climate events.
+        </p>
+        <p class="mb-16" style="max-width:800px;margin:0 auto;">
+          India's healthcare infrastructure faces rising threats from heatwaves, flooding and power-grid failures. CHIP uses advanced simulation to identify vulnerabilities and suggest cost-effective retrofits before disaster strikes.
+        </p>
+        <button class="btn btn--primary btn--lg" onclick="showSection(&#39;upload&#39;)">
+          Start Assessment
+        </button>
+      </div>
+
+      <div class="mt-24 text-center">
+        <h3>How it works</h3>
+        <div class="flex gap-24 mt-16" style="justify-content:center;">
+          <div style="max-width:200px;">
+            <div style="font-size:48px;color:#007bff;">📋</div>
+            <h4>Upload</h4>
+            <p class="text-secondary">Building drawings &amp; photos</p>
+          </div>
+          <div style="max-width:200px;">
+            <div style="font-size:48px;color:#007bff;">🔬</div>
+            <h4>Research</h4>
+            <p class="text-secondary">Answer key questions</p>
+          </div>
+          <div style="max-width:200px;">
+            <div style="font-size:48px;color:#007bff;">⚡</div>
+            <h4>Simulate</h4>
+            <p class="text-secondary">Climate impact analysis</p>
+          </div>
+          <div style="max-width:200px;">
+            <div style="font-size:48px;color:#007bff;">💡</div>
+            <h4>Solutions</h4>
+            <p class="text-secondary">Tailored recommendations</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enhanced Upload Section -->
+    <section id="upload" class="section container hidden">
+      <h2 class="mb-8">1 · Upload Building</h2>
+      <form id="uploadForm" class="flex flex-col gap-16" autocomplete="off">
+        <div class="form-group">
+          <label class="form-label" for="buildingName">Building Name</label>
+          <input type="text" id="buildingName" class="form-control" required="" placeholder="e.g. City Heart Hospital">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="buildingType">Building Type</label>
+          <select id="buildingType" class="form-control" required="">
+            <option value="" disabled="" selected="">Select type</option>
+            <option value="hospital">Hospital</option>
+            <option value="clinic">Clinic</option>
+            <option value="emergency">Emergency Center</option>
+          </select>
+        </div>
+
+        <div class="form-group flex gap-16">
+          <div style="flex:1;">
+            <label class="form-label" for="lat">Latitude</label>
+            <input type="number" step="0.0001" id="lat" class="form-control" required="">
+          </div>
+          <div style="flex:1;">
+            <label class="form-label" for="lon">Longitude</label>
+            <input type="number" step="0.0001" id="lon" class="form-control" required="">
+          </div>
+        </div>
+        <button type="button" class="btn btn--outline btn--sm" id="geoBtn" title="Use browser location">Use My Location</button>
+
+        <div class="form-group">
+          <label class="form-label" for="drawing">Architectural Drawing (PDF, DWG, image)</label>
+          <input type="file" id="drawing" class="form-control" accept=".pdf,.dwg,image/*" required="">
+        </div>
+
+        <!-- NEW: Building Pictures Section -->
+        <div class="form-group">
+          <label class="form-label">Building Pictures (Optional)</label>
+          <p class="text-secondary mb-8">Upload photos of the building exterior, interior, roof, and key areas</p>
+          
+          <div class="picture-upload-grid">
+            <div class="picture-upload-item" onclick="document.getElementById(&#39;exteriorPhoto&#39;).click()">
+              <div>📷 Exterior View</div>
+              <div class="text-secondary" style="font-size:12px;">Building facade &amp; surroundings</div>
+              <input type="file" id="exteriorPhoto" accept="image/*" style="display:none;" onchange="previewImage(this, &#39;exteriorPreview&#39;)">
+              <div id="exteriorPreview"></div>
+            </div>
+            
+            <div class="picture-upload-item" onclick="document.getElementById(&#39;interiorPhoto&#39;).click()">
+              <div>🏥 Interior View</div>
+              <div class="text-secondary" style="font-size:12px;">Main halls &amp; patient areas</div>
+              <input type="file" id="interiorPhoto" accept="image/*" style="display:none;" onchange="previewImage(this, &#39;interiorPreview&#39;)">
+              <div id="interiorPreview"></div>
+            </div>
+            
+            <div class="picture-upload-item" onclick="document.getElementById(&#39;roofPhoto&#39;).click()">
+              <div>🏠 Roof View</div>
+              <div class="text-secondary" style="font-size:12px;">Roof condition &amp; materials</div>
+              <input type="file" id="roofPhoto" accept="image/*" style="display:none;" onchange="previewImage(this, &#39;roofPreview&#39;)">
+              <div id="roofPreview"></div>
+            </div>
+            
+            <div class="picture-upload-item" onclick="document.getElementById(&#39;hvacPhoto&#39;).click()">
+              <div>❄️ HVAC Systems</div>
+              <div class="text-secondary" style="font-size:12px;">Cooling &amp; ventilation equipment</div>
+              <input type="file" id="hvacPhoto" accept="image/*" style="display:none;" onchange="previewImage(this, &#39;hvacPreview&#39;)">
+              <div id="hvacPreview"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload progress -->
+        <div id="uploadProgress" class="hidden">
+          <p>Uploading…</p>
+          <div class="progress"><div class="progress-bar" id="uploadBar"></div></div>
+        </div>
+
+        <button class="btn btn--primary" type="submit">Upload &amp; Generate ID</button>
+
+        <div id="uploadSuccess" class="status status--success hidden"></div>
+      </form>
+
+      <!-- Demo Buildings -->
+      <h3 class="mt-8">Or Load a Demo Building</h3>
+      <div id="demoList" class="flex gap-16 flex-col"></div>
+    </section>
+
+    <!-- NEW: Qualitative Research Section -->
+    <section id="qualitative" class="section container hidden">
+      <h2 class="mb-8">2 · Qualitative Research</h2>
+      <p class="mb-16 text-secondary">Please answer the following questions based on your observations and experience at the healthcare facility.</p>
+      
+      <form id="qualitativeForm" class="flex flex-col gap-16">
+        
+        <!-- Question 1: Climate Stressor -->
+        <div class="qualitative-question">
+          <label class="form-label">1. What is the main climate stressor at this facility?</label>
+          <div class="form-radio-group mt-8">
+            <div class="form-radio">
+              <input type="radio" id="stressor_heat" name="climateStressor" value="extreme_heat" required="">
+              <label for="stressor_heat">🌡️ Extreme Heat</label>
+            </div>
+            <div class="form-radio">
+              <input type="radio" id="stressor_flood" name="climateStressor" value="flooding" required="">
+              <label for="stressor_flood">🌊 Flooding</label>
+            </div>
+            <div class="form-radio">
+              <input type="radio" id="stressor_both" name="climateStressor" value="both" required="">
+              <label for="stressor_both">⚠️ Both</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 2: Roof Temperature -->
+        <div class="qualitative-question">
+          <label class="form-label">2. What is the temperature of the roof surface inside the building?</label>
+          <div class="temperature-input">
+            <input type="number" id="roofTemp" class="form-control" step="0.1" min="0" max="100" required="">
+            <span>°C</span>
+          </div>
+          <div class="text-secondary mt-4" style="font-size:12px;">
+            💡 Tip: Touch the ceiling or use an infrared thermometer if available
+          </div>
+        </div>
+
+        <!-- Question 3: Wall Temperature -->
+        <div class="qualitative-question">
+          <label class="form-label">3. What is the temperature of the walls inside the building?</label>
+          <div class="temperature-input">
+            <input type="number" id="wallTemp" class="form-control" step="0.1" min="0" max="100" required="">
+            <span>°C</span>
+          </div>
+          <div class="text-secondary mt-4" style="font-size:12px;">
+            💡 Tip: Touch interior walls away from direct sunlight
+          </div>
+        </div>
+
+        <!-- Question 4: Current Challenges -->
+        <div class="qualitative-question">
+          <label class="form-label">4. What are the main comfort/operational challenges you face?</label>
+          <div class="mt-8">
+            <div class="form-radio">
+              <input type="checkbox" id="challenge_heat" name="challenges" value="excessive_heat">
+              <label for="challenge_heat">🔥 Excessive indoor heat</label>
+            </div>
+            <div class="form-radio">
+              <input type="checkbox" id="challenge_humidity" name="challenges" value="high_humidity">
+              <label for="challenge_humidity">💧 High humidity</label>
+            </div>
+            <div class="form-radio">
+              <input type="checkbox" id="challenge_ventilation" name="challenges" value="poor_ventilation">
+              <label for="challenge_ventilation">🌬️ Poor air circulation</label>
+            </div>
+            <div class="form-radio">
+              <input type="checkbox" id="challenge_energy" name="challenges" value="high_energy_costs">
+              <label for="challenge_energy">⚡ High energy costs</label>
+            </div>
+            <div class="form-radio">
+              <input type="checkbox" id="challenge_power" name="challenges" value="power_outages">
+              <label for="challenge_power">🔌 Frequent power outages</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 5: Suggestions -->
+        <div class="qualitative-question">
+          <label class="form-label">5. Any suggestions from your end to improve the health facility?</label>
+          <textarea id="suggestions" class="form-control" rows="4" placeholder="Please share your ideas for improving comfort, energy efficiency, or climate resilience..." style="margin-top: 8px; resize: vertical;"></textarea>
+        </div>
+
+        <button class="btn btn--primary" type="submit">Submit Research &amp; Continue</button>
+      </form>
+    </section>
+
+    <!-- Simulation -->
+    <section id="simulation" class="section container hidden">
+      <h2 class="mb-8">3 · Simulation</h2>
+      <div id="simulationStatus">
+        <p class="mb-16">Starting climate impact simulation…</p>
+        <div class="progress">
+          <div class="progress-bar" id="simProgress"></div>
+        </div>
+        <div id="simLogs" class="mt-16"></div>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section id="results" class="section container">
+      <h2 class="mb-8">4 · Results</h2>
+      <div class="flex gap-24">
+        <div style="flex:1;">
+          <h4>Energy Performance</h4>
+          <canvas id="energyChart" width="400" height="200"></canvas>
+        </div>
+        <div style="flex:1;">
+          <h4>Thermal Comfort</h4>
+          <canvas id="comfortChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="mt-24">
+        <h4>Climate Risk Assessment</h4>
+        <div id="riskSummary" class="card mt-8">
+          <div class="card__body">
+            <p>Climate risk analysis will appear here after simulation...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3D Visualizer -->
+    <section id="visualizer" class="section container hidden">
+      <h2 class="mb-8">5 · 3D Visualization</h2>
+      <div id="threejs-container" style="width:100%;height:500px;border:1px solid #ccc;"></div>
+      <div class="mt-16">
+        <h4>Solar Analysis</h4>
+        <canvas id="solarChart" width="400" height="200"></canvas>
+      </div>
+    </section>
+
+    <!-- Recommendations -->
+    <section id="recommendations" class="section container hidden">
+      <h2 class="mb-8">6 · Retrofit Recommendations</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px;border-bottom:1px solid var(--color-border);">Strategy</th>
+            <th style="text-align:left;padding:8px;border-bottom:1px solid var(--color-border);">Cost</th>
+            <th style="text-align:left;padding:8px;border-bottom:1px solid var(--color-border);">Benefit</th>
+          </tr>
+        </thead>
+        <tbody id="recommendationBody"></tbody>
+      </table>
+    </section>
+
+    <!-- Technical Architecture -->
+    <section id="technical" class="section container hidden">
+      <h2 class="mb-8">7 · Technical Architecture</h2>
+      <div class="card">
+        <div class="card__body">
+          <h4>API-Driven &amp; Scalable</h4>
+          <p>CHIP uses containerized micro-services for simulation workloads, accessed via secure REST APIs. A message queue decouples real-time processing, ensuring scalability for spikes in usage.</p>
+          <p><a href="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/4e50146bb04c3e24953c155f9195a499/9dc02a17-6b1e-474a-a235-dee9ccb38255/118ad148.html?utm_source=perplexity#" target="_blank">Download deployment guide</a></p>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // Navigation and core functions
+      function showSection(sectionId) {
+        // Hide all sections
+        document.querySelectorAll('.section').forEach(section => {
+          section.classList.add('hidden');
+        });
+        
+        // Show target section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+          targetSection.classList.remove('hidden');
+          
+          // Update navigation
+          document.querySelectorAll('nav a').forEach(link => {
+            link.classList.remove('active');
+          });
+          document.querySelector(`nav a[href="#${sectionId}"]`).classList.add('active');
+        }
+      }
+
+      // Handle navigation clicks
+      document.querySelectorAll('nav a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const sectionId = link.getAttribute('href').substring(1);
+          showSection(sectionId);
+        });
+      });
+
+      // Image preview function
+      function previewImage(input, previewId) {
+        const file = input.files[0];
+        const previewContainer = document.getElementById(previewId);
+        
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            previewContainer.innerHTML = `<img src="${e.target.result}" class="picture-preview" alt="Preview">`;
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      // Form submissions
+      document.getElementById('uploadForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Show upload progress
+        document.getElementById('uploadProgress').classList.remove('hidden');
+        const progressBar = document.getElementById('uploadBar');
+        
+        // Simulate upload progress
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 10;
+          progressBar.style.width = progress + '%';
+          
+          if (progress >= 100) {
+            clearInterval(interval);
+            document.getElementById('uploadProgress').classList.add('hidden');
+            document.getElementById('uploadSuccess').classList.remove('hidden');
+            document.getElementById('uploadSuccess').textContent = 'Upload successful! Building ID: CHI-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            
+            // Auto-advance to qualitative research after 2 seconds
+            setTimeout(() => {
+              showSection('qualitative');
+            }, 2000);
+          }
+        }, 200);
+      });
+
+      document.getElementById('qualitativeForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Collect form data
+        const formData = new FormData(e.target);
+        const data = {
+          climateStressor: formData.get('climateStressor'),
+          roofTemp: document.getElementById('roofTemp').value,
+          wallTemp: document.getElementById('wallTemp').value,
+          challenges: formData.getAll('challenges'),
+          suggestions: document.getElementById('suggestions').value
+        };
+        
+        console.log('Qualitative Research Data:', data);
+        
+        // Show success message and advance
+        alert('Research data submitted successfully!');
+        setTimeout(() => {
+          showSection('simulation');
+          startSimulation();
+        }, 1000);
+      });
+
+      // Geolocation
+      document.getElementById('geoBtn').addEventListener('click', () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            document.getElementById('lat').value = position.coords.latitude.toFixed(4);
+            document.getElementById('lon').value = position.coords.longitude.toFixed(4);
+          });
+        }
+      });
+
+      // Simulation function
+      function startSimulation() {
+        const progress = document.getElementById('simProgress');
+        const logs = document.getElementById('simLogs');
+        
+        const steps = [
+          'Loading building data...',
+          'Processing architectural drawings...',
+          'Analyzing climate data...',
+          'Running thermal simulation...',
+          'Calculating energy performance...',
+          'Generating 3D model...',
+          'Preparing recommendations...'
+        ];
+        
+        let currentStep = 0;
+        const stepInterval = setInterval(() => {
+          if (currentStep < steps.length) {
+            logs.innerHTML += `<p>${steps[currentStep]}</p>`;
+            progress.style.width = ((currentStep + 1) / steps.length * 100) + '%';
+            currentStep++;
+          } else {
+            clearInterval(stepInterval);
+            logs.innerHTML += '<p><strong>Simulation complete!</strong></p>';
+            setTimeout(() => {
+              showSection('results');
+            }, 1500);
+          }
+        }, 800);
+      }
+
+      // Initialize
+      document.addEventListener('DOMContentLoaded', () => {
+        showSection('landing');
+      });
+    </script>
+  
+</body></html>
