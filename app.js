@@ -955,12 +955,15 @@ function renderRecommendations() {
   recommendationsToShow.forEach(rec => {
     const row = document.createElement('tr');
     row.innerHTML = `
+      <td><span class="priority-${rec.priority.toLowerCase()}">${rec.priority}</span></td>
       <td>
         <strong>${rec.title}</strong><br>
         <small style="color: var(--color-text-secondary);">${rec.description}</small>
       </td>
+      <td>${rec.estimatedSavings}</td>
       <td>${rec.implementationCost}</td>
-      <td>${rec.estimatedSavings}<br><small>${rec.paybackPeriod}</small></td>
+      <td>${rec.paybackPeriod}</td>
+      <td><small>${rec.climateBenefit}</small></td>
     `;
     tbody.appendChild(row);
   });
